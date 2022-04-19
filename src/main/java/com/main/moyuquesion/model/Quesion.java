@@ -4,13 +4,22 @@ package com.main.moyuquesion.model;
 import java.util.Objects;
 
 public class Quesion {
+
     private final String answer;
 
-    private final String desc;
+    private final String description;
 
-    public Quesion(String answer, String desc) {
+    public Quesion(String answer, String description) {
         this.answer = answer;
-        this.desc = desc;
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 
     @Override
@@ -20,14 +29,7 @@ public class Quesion {
 
     @Override
     public int hashCode() {
-        return Objects.hash(answer, desc);
+        return Objects.hash(answer, description);
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
 }

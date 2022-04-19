@@ -12,51 +12,41 @@ import java.util.regex.Pattern;
 
 
 public class FileReaderService {
-    private String path = "src\\main\\resources\\com\\main\\moyuquesion\\files";
 
-    public Map<String, List<Quesion>> makeFileToMap() throws IOException {
+    private static final String path = "src\\main\\resources\\com\\main\\moyuquesion\\files";
+
+    public Map<String, List<Quesion>> generateQuestions() throws IOException {
         File file = new File(path);
         Pattern pattern = Pattern.compile(".+[（(]\\s*(\\w+)\\s*[）)]");
-        Map<String, List<Quesion>> fileMap = new HashMap<>();
+        Map<String, List<Quesion>> questions = new HashMap<>();
 
         for (String fileName: Objects.requireNonNull(file.list())) {
-            BufferedReader fileReader = new BufferedReader(new FileReader(path + "\\" + fileName));
-            List<Quesion> quesionList = new ArrayList<>();
-            String quesionAnswer = "";
-            StringBuilder stringBuilder = new StringBuilder();
-
-            while (fileReader.ready()) {
-                String line = fileReader.readLine();
-
+            BufferedReader reader = new BufferedReader(new FileReader(path + "\\" + fileName));
+            List<Quesion> currentQuestions = new ArrayList<>();
+            String answer = "";
+            StringBuilder descriptionBuilder = new StringBuilder();
+            while (reader.ready()) {
+                String line = reader.readLine();
                 if (line.equals("")) {
-                    if (stringBuilder.length() > 0) {
-                        quesionList.add(new Quesion(quesionAnswer, stringBuilder.toString()));
+                    if (descriptionBuilder.length() > 0) {
+                        currentQuestions.add(new Quesion(answer, descriptionBuilder.toString()));
                     }
-                    stringBuilder = new StringBuilder();
+                    descriptionBuilder.setLength(0);
 
-                    while (fileReader.ready()) {
-                        line = fileReader.readLine();
-                        if (!line.equals("")) {
-                            break;
-                        }
-                    }
+                    while (reader.ready() && !(line = reader.readLine()).equals(""));
 
-                    if (!fileReader.ready()) {
-                        break;
-                    }
+                    if (!reader.ready()) break;
                 }
                 Matcher matcher = pattern.matcher(line);
-
                 if (matcher.find()) {
-                    line = line.replaceAll("[（(]\\s*\\w+\\s*[）)]", "()");
-                    quesionAnswer = matcher.group(1);
+                    line = line.replaceAll("[（(]\\s*\\w+\\s*[）)]", "");
+                    answer = matcher.group(1);
                 }
-
-                stringBuilder.append(line).append("\n");
+                descriptionBuilder.append(line).append("\n");
             }
-            fileMap.put(fileName, quesionList);
+            questions.put(fileName, currentQuestions);
         }
-        return fileMap;
+        return questions;
     }
 }
 

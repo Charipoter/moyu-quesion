@@ -17,42 +17,25 @@ import java.util.Map;
 import java.util.Set;
 
 public class MainController {
-    @FXML
-    private Label welcomeText;
-
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
 
     private final CacheService cacheService = new CacheService();
 
-    private Map<String, List<Quesion>> fileMap;
+    private Map<String, List<Quesion>> questions;
 
-    private List<Quesion> quesionList;
+    private List<Quesion> currentQuestions;
 
-    private int quesionIndex;
+    private int currentQuestionIndex;
 
     private final Set<Character> myAnswers = new HashSet<>();
 
     private final Set<Character> trueAnswers = new HashSet<>();
 
     private boolean checkIndex(int i) {
-        return i >= 0 && i < quesionList.size();
+        return i >= 0 && i < currentQuestions.size();
     }
-
 
     @FXML
     private ListView<?> fileDisplayer;
-
-    @FXML
-    private Button loadButton;
-
-    @FXML
-    private Button nextQuesion;
-
-    @FXML
-    private Button preQuesion;
 
     @FXML
     private TextArea quesionDisplayer;
@@ -80,14 +63,14 @@ public class MainController {
         myAnswers.clear();
         trueAnswers.clear();
 
-        for (char c: quesionList.get(quesionIndex).getAnswer().toCharArray()) {
+        for (char c: currentQuestions.get(currentQuestionIndex).getAnswer().toCharArray()) {
             trueAnswers.add(c);
         }
 
-        cacheService.changeCurIndex(quesionIndex);
+        cacheService.changeCurIndex(currentQuestionIndex);
         cacheService.setCurIsWrong(false);
 
-        quesionDisplayer.setText(quesionList.get(quesionIndex).getDesc());
+        quesionDisplayer.setText(currentQuestions.get(currentQuestionIndex).getDescription());
 
         aButton.setStyle("");
         bButton.setStyle("");
@@ -98,8 +81,8 @@ public class MainController {
     @FXML
     void goNext(ActionEvent event) {
 
-        if (checkIndex(quesionIndex + 1)) {
-            quesionDisplayer.setText(quesionList.get(++quesionIndex).getDesc());
+        if (checkIndex(currentQuestionIndex + 1)) {
+            quesionDisplayer.setText(currentQuestions.get(++currentQuestionIndex).getDescription());
         }
         onChangeQuesion();
     }
@@ -107,8 +90,8 @@ public class MainController {
     @FXML
     void goPre(ActionEvent event) {
 
-        if (checkIndex(quesionIndex - 1)) {
-            quesionDisplayer.setText(quesionList.get(--quesionIndex).getDesc());
+        if (checkIndex(currentQuestionIndex - 1)) {
+            quesionDisplayer.setText(currentQuestions.get(--currentQuestionIndex).getDescription());
         }
         onChangeQuesion();
     }
@@ -121,13 +104,13 @@ public class MainController {
         }
         ObservableList list = FXCollections.observableArrayList();
 
-        fileMap = new FileReaderService().makeFileToMap();
+        questions = new FileReaderService().generateQuestions();
         // 错题集也加进去
-        list.addAll(fileMap.keySet());
+        list.addAll(questions.keySet());
         list.add("错题(自动添加)");
         fileDisplayer.setItems(list);
 
-        cacheService.initCacheMap(fileMap.keySet());
+        cacheService.initCacheMap(questions.keySet());
     }
 
     @FXML
@@ -140,15 +123,15 @@ public class MainController {
             return;
         }
 
-        if (!fileMap.containsKey(fileName)) {
+        if (!questions.containsKey(fileName)) {
             return;
         }
 
-        quesionList = fileMap.get(fileName);
+        currentQuestions = questions.get(fileName);
 
         cacheService.changeCurFile((String)fileName);
 
-        quesionIndex = cacheService.getCurIndex();
+        currentQuestionIndex = cacheService.getCurIndex();
 
         tabPages.getSelectionModel().select(1);
 
@@ -156,20 +139,20 @@ public class MainController {
     }
 
     void onChangeWrongs() {
-        quesionList = cacheService.getWrongs();
+        currentQuestions = cacheService.getWrongs();
 
         tabPages.getSelectionModel().select(1);
 
-        if (quesionList.size() == 0) {
+        if (currentQuestions.size() == 0) {
             quesionDisplayer.setText("你没有错题!");
             return;
         }
 
         cacheService.changeCurFile("_wrongs");
 
-        quesionIndex = cacheService.getCurIndex();
+        currentQuestionIndex = cacheService.getCurIndex();
 
-        quesionDisplayer.setText(quesionList.get(quesionIndex).getDesc());
+        quesionDisplayer.setText(currentQuestions.get(currentQuestionIndex).getDescription());
 
         onChangeQuesion();
     }
@@ -181,7 +164,7 @@ public class MainController {
         if (cacheService.isCurIsWrong()) {
             return;
         }
-        cacheService.deleteWrong(quesionList.get(quesionIndex));
+        cacheService.deleteWrong(currentQuestions.get(currentQuestionIndex));
     }
 
     void wrong(Button button) {
@@ -189,7 +172,7 @@ public class MainController {
         resultLabel.setText("答错了..");
 
         cacheService.setCurIsWrong(true);
-        cacheService.addWrong(quesionList.get(quesionIndex));
+        cacheService.addWrong(currentQuestions.get(currentQuestionIndex));
     }
 
     void middle(Button button) {
