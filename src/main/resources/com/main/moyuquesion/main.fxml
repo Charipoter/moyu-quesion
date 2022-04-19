@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TabPane fx:id="tabPages" prefHeight="563.0" prefWidth="511.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/" fx:controller="com.main.moyuquesion.controller.HelloController">
+<TabPane fx:id="tabPages" prefHeight="563.0" prefWidth="511.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/" fx:controller="com.main.moyuquesion.controller.MainController">
     <tabs>
         <Tab text="题集">
             <content>

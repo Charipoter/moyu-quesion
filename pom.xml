@@ -67,7 +67,7 @@
                             <launcher>launcher</launcher>
                             <jlinkImageName>output</jlinkImageName>
                             <jlinkZipName>outputzip</jlinkZipName>
-                            <mainClass>com.main.moyuquesion/com.main.moyuquesion.HelloApplication</mainClass>
+                            <mainClass>com.main.moyuquesion/com.main.moyuquesion.Application</mainClass>
                         </configuration>
                     </execution>
                 </executions>

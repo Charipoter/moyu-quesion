@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class FileService {
+public class FileReaderService {
     private String path = "src\\main\\resources\\com\\main\\moyuquesion\\files";
 
     public Map<String, List<Quesion>> makeFileToMap() throws IOException {

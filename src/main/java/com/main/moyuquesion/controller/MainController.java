@@ -2,7 +2,7 @@ package com.main.moyuquesion.controller;
 
 import com.main.moyuquesion.model.Quesion;
 import com.main.moyuquesion.service.CacheService;
-import com.main.moyuquesion.service.FileService;
+import com.main.moyuquesion.service.FileReaderService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HelloController {
+public class MainController {
     @FXML
     private Label welcomeText;
 
@@ -121,7 +121,7 @@ public class HelloController {
         }
         ObservableList list = FXCollections.observableArrayList();
 
-        fileMap = new FileService().makeFileToMap();
+        fileMap = new FileReaderService().makeFileToMap();
         // 错题集也加进去
         list.addAll(fileMap.keySet());
         list.add("错题(自动添加)");
